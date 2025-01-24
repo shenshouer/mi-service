@@ -1,8 +1,11 @@
+use std::sync::Arc;
+
 use anyhow::Result;
 use log::{debug, error};
 use reqwest::header::{HeaderMap, USER_AGENT};
 use serde::Deserialize;
 use serde_json::json;
+use tokio::sync::Mutex;
 
 use crate::{
     account::Account,
@@ -12,16 +15,17 @@ use crate::{
 };
 
 pub struct MiNaService {
-    account: Account,
+    account: Arc<Mutex<Account>>,
 }
 
 impl MiNaService {
     pub fn new(account: Account) -> Self {
+        let account = Arc::new(Mutex::new(account));
         Self { account }
     }
 
     async fn request<T>(
-        &mut self,
+        &self,
         mut uri: String,
         mut data: Option<serde_json::Value>,
     ) -> Result<Response<T>>
@@ -42,8 +46,8 @@ impl MiNaService {
                 "MiHome/6.0.103 (com.xiaomi.mihome; build:6.0.103.1; iOS 14.4.0) Alamofire/6.0.103 MICO/iOSApp/appStore/6.0.103".parse().unwrap(),
             );
 
-        let resp = self
-            .account
+        let mut account = self.account.lock().await;
+        let resp = account
             .request(
                 MINA_SID,
                 &format!("https://api2.mina.mi.com{uri}"),

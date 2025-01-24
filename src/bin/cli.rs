@@ -70,7 +70,7 @@ async fn main() -> anyhow::Result<()> {
                 let devices = mina_svc.devices(None).await?;
                 info!("MiNADevices: {}", serde_json::to_string(&devices).unwrap());
             } else {
-                let mut miio_svc = MiIOService::new(account, None);
+                let miio_svc = MiIOService::new(account, None);
                 miio_svc
                     .devices(get_virtual_model, get_huami_device)
                     .await?;

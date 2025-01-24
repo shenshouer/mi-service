@@ -1,4 +1,7 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::{
+    sync::Arc,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 use anyhow::Result;
 use base64::{engine::general_purpose::STANDARD, Engine};
@@ -8,6 +11,7 @@ use rand::Rng;
 use reqwest::header::{HeaderMap, USER_AGENT};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use tokio::sync::Mutex;
 use url::Url;
 
 use crate::{
@@ -16,7 +20,7 @@ use crate::{
 };
 
 pub struct MiIOService {
-    account: Account,
+    account: Arc<Mutex<Account>>,
     server: String,
 }
 
@@ -47,10 +51,11 @@ impl MiIOService {
             }
         }
 
+        let account = Arc::new(Mutex::new(account));
         Self { account, server }
     }
 
-    async fn request<R, P>(&mut self, uri: &str, data: Option<P>) -> Result<Response<R>>
+    async fn request<R, P>(&self, uri: &str, data: Option<P>) -> Result<Response<R>>
     where
         R: for<'de> Deserialize<'de>,
         P: Serialize + Clone,
@@ -66,19 +71,19 @@ impl MiIOService {
             "PROTOCAL-HTTP2".parse().unwrap(),
         );
 
-        let ssecurity = self.account.get_sid(MIIO_SID).await?;
+        let mut account = self.account.lock().await;
+        let ssecurity = account.get_sid(MIIO_SID).await?;
         let data = sign_data(uri, data, &ssecurity);
 
         let url = format!("{}{uri}", self.server);
-        let res = self
-            .account
+        let res = account
             .request::<R, SignData>(MIIO_SID, &url, data, Some(headers), None)
             .await?;
         Ok(res)
     }
 
     pub async fn devices(
-        &mut self,
+        &self,
         get_virtual_model: Option<bool>,
         get_huami_device: Option<bool>,
     ) -> Result<()> {
