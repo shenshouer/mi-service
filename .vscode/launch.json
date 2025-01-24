@@ -1,0 +1,70 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "cli-miio",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=cli",
+                    "--package=mi-service"
+                ],
+                "filter": {
+                    "name": "cli",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "list",
+            ],
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "cli-mina",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=cli",
+                    "--package=mi-service"
+                ],
+                "filter": {
+                    "name": "cli",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "list",
+                "--mina"
+            ],
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "login",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=login",
+                    "--package=mi-service"
+                ],
+                "filter": {
+                    "name": "login",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
