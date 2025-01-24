@@ -60,7 +60,7 @@ impl MiNaService {
         Ok(resp)
     }
 
-    pub async fn devices(&mut self, master: Option<usize>) -> Result<MiNaDevices> {
+    pub async fn devices(&self, master: Option<usize>) -> Result<MiNaDevices> {
         debug!("MiNaService::devices");
         let result = self
             .request(
@@ -76,7 +76,7 @@ impl MiNaService {
     }
 
     async fn ubus_request(
-        &mut self,
+        &self,
         device_id: &str,
         method: &str,
         path: &str,
@@ -97,7 +97,7 @@ impl MiNaService {
         Ok(resp.code == 0)
     }
 
-    pub async fn text_to_speech(&mut self, device_id: &str, text: &str) -> Result<bool> {
+    pub async fn text_to_speech(&self, device_id: &str, text: &str) -> Result<bool> {
         debug!("MiNaService::text_to_speech");
         self.ubus_request(
             device_id,
@@ -110,7 +110,7 @@ impl MiNaService {
         .await
     }
 
-    pub async fn player_set_volume(&mut self, device_id: &str, volume: i32) -> Result<bool> {
+    pub async fn player_set_volume(&self, device_id: &str, volume: i32) -> Result<bool> {
         debug!("MiNaService::player_set_volume");
         self.ubus_request(
             device_id,
@@ -126,7 +126,7 @@ impl MiNaService {
 
     /// 发生消息 或 调整 设备音量
     pub async fn send_message(
-        &mut self,
+        &self,
         devices: &[serde_json::Value], // 假设使用 serde_json::Value 来表示设备数组
         devno: i32,                    // -1/0/1...
         message: Option<String>,

@@ -66,7 +66,7 @@ async fn main() -> anyhow::Result<()> {
             get_huami_device,
         } => {
             if mina {
-                let mut mina_svc = MiNaService::new(account);
+                let mina_svc = MiNaService::new(account);
                 let devices = mina_svc.devices(None).await?;
                 info!("MiNADevices: {}", serde_json::to_string(&devices).unwrap());
             } else {
