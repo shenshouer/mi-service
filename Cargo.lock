@@ -972,6 +972,7 @@ dependencies = [
  "serde_urlencoded",
  "sha1",
  "sha2",
+ "tempfile",
  "thiserror",
  "tokio",
  "tracing",
