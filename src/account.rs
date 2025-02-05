@@ -19,6 +19,7 @@ use crate::{
 };
 
 // Account主结构体
+#[derive(Clone)]
 pub struct Account {
     store: Arc<CookieStoreMutex>,
     client: Client,

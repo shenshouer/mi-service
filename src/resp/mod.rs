@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub use miio::{MiIODevices, ResultData};
+pub use miio::{MiIODevice, MiIODevices, ResultData};
 pub use mina::MiNaDevices;
 
 mod miio;

@@ -1,4 +1,6 @@
 use std::{
+    env,
+    path::Path,
     sync::Arc,
     time::{SystemTime, UNIX_EPOCH},
 };
@@ -17,7 +19,7 @@ use tokio::{fs, sync::Mutex};
 use url::Url;
 
 use crate::{
-    resp::{MiIODevices, Response, ResultData},
+    resp::{MiIODevice, MiIODevices, Response, ResultData},
     Account, MIIO_SID,
 };
 
@@ -237,9 +239,10 @@ impl MiIOService {
 
     pub async fn devices(
         &self,
+        name: Option<&str>,
         get_virtual_model: Option<bool>,
         get_huami_device: Option<bool>,
-    ) -> Result<()> {
+    ) -> Result<Vec<MiIODevice>> {
         debug!("MiIOService::devices");
         let resp: Response<ResultData<MiIODevices>> = self
             .request(
@@ -250,9 +253,11 @@ impl MiIOService {
                 }),
             )
             .await?;
-
-        println!("{}", serde_json::to_string(&resp.data)?);
-        Ok(())
+        let list = resp.data.result.list;
+        match name {
+            Some(n) => Ok(list.into_iter().filter(|it| it.name.contains(n)).collect()),
+            None => Ok(list),
+        }
     }
 
     // MIOT规格解析
@@ -262,8 +267,12 @@ impl MiIOService {
         format: Option<&str>,
     ) -> Result<Value> {
         if !type_filter.map(|t| t.starts_with("urn")).unwrap_or(false) {
-            let temp_dir = tempdir()?;
-            let cache_path = temp_dir.path().join("miservice_miot_specs.json");
+            let cache_path = if let Ok(path) = env::var("MIOT_SPEC_PATH") {
+                let temp_dir = Path::new(&path);
+                temp_dir.join("miservice_miot_specs.json")
+            } else {
+                tempdir()?.path().join("miservice_miot_specs.json")
+            };
 
             let specs = if cache_path.exists() {
                 let content = fs::read_to_string(&cache_path).await?;

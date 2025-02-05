@@ -1,3 +1,5 @@
 /target
 .env
+.DS_Store
 mini.rs_bak
+miservice_miot_specs.json

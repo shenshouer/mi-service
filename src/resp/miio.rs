@@ -57,3 +57,57 @@ pub struct Extra {
     #[serde(rename = "isPasswordEncrypt")]
     pub is_password_encrypt: i32,
 }
+
+// #[derive(Debug, Clone, Serialize, Deserialize)]
+// pub struct MiotSpecResp {
+//     pub instances: Vec<MiotSpec>,
+// }
+
+// #[derive(Debug, Clone, Serialize, Deserialize)]
+// pub struct MiotSpec {
+//     pub status: String,
+//     pub model: String,
+//     pub version: i32,
+//     pub r#type: String,
+//     pub ts: i64,
+// }
+
+// #[derive(Debug, Clone, Serialize, Deserialize)]
+// pub struct MiotSpecDetail {
+//     pub r#type: String,
+//     pub description: String,
+//     pub services: Vec<MiotSpecService>,
+// }
+
+// #[derive(Debug, Clone, Serialize, Deserialize)]
+// pub struct MiotSpecService {
+//     pub iid: i32,
+//     pub r#type: String,
+//     pub description: String,
+//     pub properties: Vec<MiotSpecProperty>,
+// }
+
+// #[derive(Debug, Clone, Serialize, Deserialize)]
+// pub struct MiotSpecProperty {
+//     pub iid: i32,
+//     pub r#type: String,
+//     pub description: String,
+//     pub format: String,
+//     pub access: Vec<String>,
+//     pub unit: String,
+//     #[serde(rename = "value-range", skip_serializing_if = "Option::is_none")]
+//     pub value_range: Option<Vec<i32>>,
+//     #[serde(rename = "value-list", skip_serializing_if = "Option::is_none")]
+//     pub value_list: Option<Vec<ValueList>>,
+//     // pub min: i32,
+//     // pub max: i32,
+//     // pub step: i32,
+//     // pub permission: Vec<String>,
+//     // pub additional: String,
+// }
+
+// #[derive(Debug, Clone, Serialize, Deserialize)]
+// pub struct ValueList {
+//     pub value: i32,
+//     pub description: String,
+// }
